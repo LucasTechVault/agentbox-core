@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.agentbox/
+workspaces/*
+!workspaces/box-sample/
+workspaces/box-sample/.agentbox/
+*.tsbuildinfo
