@@ -1,0 +1,25 @@
+# AgentBox Curriculum & Runtime Tracker
+
+This tracker maps the clean-slate implementation of `agentbox-core` (executable TypeScript runtime engine) and `agent-architect` (control-plane playbook & progress vault) across our core learning dimensions:
+
+- **Control Topologies:**
+  1. **Deterministic Workflow** — The runtime deterministically sequences and routes steps; models are invoked only as bounded, schema-constrained functions or judges inside a step.
+  2. **Autonomous Agent** — The agent dynamically selects its next tool call or reasoning action inside a host-enforced budget and capability envelope.
+- **Execution Runtimes:**
+  1. **Event-Driven / Append-Only Ledger** — Immutable JSONL event log, pure state reducers, revision-checked snapshots, and reactive event routing without model polling.
+  2. **ReAct Loop** — Iterative `Reason → Act (Tool Call) → Observe` execution with pre-reserved budgets, model gateway routing, and scoped staging transactions.
+  3. **Graph / State-Machine** — Validated DAG scheduling and explicit state transition tables (`PENDING → READY → LEASED → RUNNING → VERIFYING → SUCCEEDED / FAILED`).
+  4. **A2A (Agent-to-Agent Protocol)** — Typed cross-agent envelopes, capability-narrowed `TaskLease` delegations, immutable `EvidenceBundle` / `StagedPatch` / `VerificationReceipt` handoffs, and superseded-lease fencing.
+
+---
+
+## Milestone Sequence (M0 $\rightarrow$ M5)
+
+| Milestone | Status | Primary Runtime / Topology Focus | Core Modules (`agentbox-core`) | Playbook Mapping (`agent-architect`) | Verified Proof / Deliverables |
+| :--- | :--- | :--- | :--- | :--- | :---
+| **M0: Kernel Foundation** | **LIVE & VERIFIED** | Shared Kernel Substrate (Budgets, Single-Agent Loop, Append-Only JSONL Log, Path-Fenced Boxes) | [`src/runtime/types.ts`](../src/runtime/types.ts), [`src/runtime/budget.ts`](../src/runtime/budget.ts), [`src/runtime/runner.ts`](../src/runtime/runner.ts), [`src/ledger/event-log.ts`](../src/ledger/event-log.ts), [`src/workspace/box-manager.ts`](../src/workspace/box-manager.ts) | Phase 1 (`CORE-101`, `CORE-102`, `CORE-103`) | 24 passing kernel tests ([`box-manager.test.ts`](../tests/box-manager.test.ts), [`event-log.test.ts`](../tests/event-log.test.ts), [`runtime-budget.test.ts`](../tests/runtime-budget.test.ts)); 5 M0 entries in [`docs/KEY_CONCEPTS.md`](KEY_CONCEPTS.md); [`ADR-0001`](adr/ADR-0001-bottom-up-runtime-and-topology-curriculum.md). |
+| **M1: Event-Driven / Append-Only Ledger Runtime** | **NEXT UP** | **Runtime: Event-Driven / Append-Only Ledger** (Reducers, Deterministic Replay, Revision Snapshots, Reactive Event Bus) | `src/ledger/event-log.ts`, `src/ledger/reducer.ts` (planned), `src/ledger/snapshot.ts` (planned), `src/runtime/event-bus.ts` (planned) | Phase 1 (`CORE-103`) & Phase 4 (`CORE-401`, `CORE-402` — Box Sentinel) | Pure state projection from `EventLog`, optimistic concurrency / revision-checked snapshots, burst deduplication, and zero-token idle event routing. |
+| **M2: Control Topologies (Deterministic Workflow vs. Autonomous ReAct)** | **PLANNED** | **Topologies: Workflow vs. Autonomous** + **Runtime: ReAct Loop** | `src/runtime/workflow-runner.ts` (planned), `src/runtime/react-runner.ts` (planned), `src/gateway/model-router.ts` (planned), `src/workspace/staging-transaction.ts` (planned) | Phase 1 (`CORE-104`, `CORE-105` — Builder) & Phase 2 (`CORE-201` to `CORE-204` — Critic / Curator pipelines) | Side-by-side execution proving code-routed Workflow steps vs. model-routed ReAct tool loops under identical `ExecutionBudget` and `EventLog` invariants. |
+| **M3: Graph / State-Machine Runtime** | **PLANNED** | **Runtime: Graph / State-Machine** (Validated Task DAG, Legal Transition Table, Bounded Repair Cycle) | `src/orchestration/task-graph.ts` (planned), `src/orchestration/transitions.ts` (planned), `src/runtime/repair-cycle.ts` (planned) | Phase 2 (`CORE-205`) & Phase 3 (`CORE-301` — Orchestrator) | Cycle/missing-prerequisite rejection, deterministic `TaskGraph` projection from ledger events, and bounded Builder ↔ Critic repair loops with no-progress termination. |
+| **M4: A2A (Agent-to-Agent Protocol) Runtime** | **PLANNED** | **Runtime: A2A Protocol** (`TaskLease`, `EvidenceBundle`, `StagedPatch`, `VerificationReceipt`, Superseded-Lease Fencing) | `src/contracts/a2a.ts` (planned), `src/orchestration/dispatcher.ts` (planned), `src/orchestration/reconciler.ts` (planned) | Phase 3 (`CORE-302` to `CORE-305` — Orchestrator, Recon Scout, Builder, Critic handoffs) | Parent-to-child budget reservation pooling, capability intersection on `TaskLease`, stale/superseded lease rejection, and deterministic fan-out/fan-in reconciliation. |
+| **M5: Adversarial Verification & Trajectory Eval Gate** | **PLANNED** | **Cross-Topology & Cross-Runtime Evaluation** (Outcome + Trajectory Graders, Mutation Fixtures) | `src/evaluation/graders.ts` (planned), `src/evaluation/box-suite.ts` (planned) | Phase 4 (`CORE-403`, `CORE-404`, `CORE-405`) | Deterministic + trajectory evaluation harness rejecting seeded mutations, tampered tests, out-of-scope edits, and false approvals across Workflow, ReAct, Graph, Event, and A2A runs. |
